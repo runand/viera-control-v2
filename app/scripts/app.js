@@ -7,8 +7,10 @@ var ipConfigButton = document.querySelector('.js-ip-config'),
     appView = document.querySelector('#appView'),
     actionButtons = document.querySelectorAll('.btn-action'),
     ipModalField = document.querySelector('#ipField'),
+    ccModalField = document.querySelector('#ccField'),
     ipModalSave = document.querySelector('.js-ip-save'),
-    statusText = document.querySelector('.vol');
+    statusText = document.querySelector('.vol'),
+    powerOn = document.querySelector('.btn-power-on');
 
 
 // Helper event function
@@ -40,14 +42,12 @@ function showIpConfig() {
     addEvent('click', ipModalSave, function(e) {
         e.preventDefault();
 
-        socket.emit('setIpAddress', ipModalField.value);
+        psocket.emit('setIpAddress', ipModalField.value, ccModalField.value);
         socket.on('ipAddressResult', function (result) {
-            if(result.ip) {
-                localStorage.setItem('ipAddress', result.ip);
-                start();
-            } else if (result.error) {
-                alert('Invalid IP address');
-            }
+          localStorage.setItem('ipAddress', result.ip);
+          if (result.ccip !== undefined) {
+            localStorage.setItem('ccipAddress', result.ccip);
+          }
         });
     });
 }
@@ -55,7 +55,7 @@ function showIpConfig() {
 function start() {
     switchView(configView, appView);
 
-    socket.emit('setIpAddress', localStorage.getItem('ipAddress'));
+    socket.emit('setIpAddress', localStorage.getItem('ipAddress'), localStorage.getItem('ccipAddress'));
 
     socket.on('volume', function(result) {
         statusText.textContent = 'Volume - ' + result.volume;
@@ -74,5 +74,11 @@ function start() {
         e.preventDefault();
 
         showIpConfig();
+    });
+
+    addEvent('click', powerOn, function(e) {
+        e.preventDefault();
+        socket.emit('poweron');
+
     });
 }

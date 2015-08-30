@@ -20,14 +20,16 @@
         <div class="container">
 
             <div id="configView">
-                <input type="text" name="ip" id="ipField" placeholder="IP address">
+                <input type="text" name="ip" id="ipField" placeholder="TV address">
+                <input type="text" name="chromecast" id="ccField" placeholder="Chromecast address">
                 <button class="js-ip-save btn btn-primary">Save</button>
             </div>
 
             <div id="appView">
 
-                <div class="row-big row-top">
-                    <button class="btn btn-action btn-block" data-action="POWER"><i class="icon-off"></i> Power</button>
+                <div class="row row-top">
+                    <button class="btn btn-power-on grid2" data-action="POWER"><i class="icon-off"></i> Power On</button>
+                    <button class="btn btn-action grid2" data-action="POWER"><i class="icon-off"></i> Power OFF</button>
                     <p class="vol">Volume - </p>
                 </div>
                 <div class="row">
@@ -39,6 +41,11 @@
                     <button class="btn btn-action grid3" data-action="APPS">APPS</button>
                     <button class="btn btn-action grid3" data-action="HOME">HOME</button>
                     <button class="btn btn-action grid3" data-action="GUIDE">GUIDE</button>
+                </div>
+                <div class="row-big">
+                    <button class="btn btn-action grid3" data-action="HDMI1">HDMI1</button>
+                    <button class="btn btn-action grid3" data-action="HDMI2">HDMI2</button>
+                    <button class="btn btn-action grid3" data-action="HDMI3">HDMI3</button>
                 </div>
                 <div class="row-big">
                     <button class="btn btn-action grid4" data-action="MENU">MENU</button>

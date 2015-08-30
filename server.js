@@ -1,6 +1,7 @@
 'use strict';
 
 var connect = require('connect'),
+    request = require('request'),
     http = require('http'),
     port = 3000,
     app = connect().use(connect.static(__dirname + '/app'));
@@ -73,14 +74,12 @@ var sendRequest = function(ipAddress, type, action, command, options) {
 io.sockets.on('connection', function(socket) {
 
     var ipAddress;
-    socket.on('setIpAddress', function(ip) {
-        var ipRegExp = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
-        if(ipRegExp.test(ip)) {
-            ipAddress = ip;
-            socket.emit('ipAddressResult', { ip: ipAddress });
-        } else {
-            socket.emit('ipAddressResult', { error: 'Invalid IP address' });
-        }
+    var ccipAddress;
+    socket.on('setIpAddress', function(ip, ccip) {
+      ipAddress = ip;
+      ccipAddress = ccip;
+      socket.emit('ipAddressResult', { ip: ipAddress, ccip: ccipAddress });
+
     });
 
     function getVolume() {
@@ -98,6 +97,17 @@ io.sockets.on('connection', function(socket) {
         getVolume();
         setTimeout(interval, 1000);
     })();
+
+    socket.on('poweron', function() {
+        var onRequest = {
+            url: 'http://' + ccipAddress + ':8008/apps/YouTube',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            json: 'v=poweron',
+        };
+        request.post(onRequest, function (res) {});
+    });
 
     socket.on('action', function(action) {
         var action = 'NRC_' + action['action'].toUpperCase() + '-ONOFF';
