@@ -1,7 +1,6 @@
 'use strict';
 
 var connect = require('connect'),
-    request = require('request'),
     http = require('http'),
     port = 3000,
     app = connect().use(connect.static(__dirname + '/app'));
@@ -99,14 +98,23 @@ io.sockets.on('connection', function(socket) {
     })();
 
     socket.on('poweron', function() {
+        var postData = 'v=poweron';
         var onRequest = {
-            url: 'http://' + ccipAddress + ':8008/apps/YouTube',
+            host: ccipAddress,
+            port: 8008,
+            path: '/apps/YouTube',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            },
-            json: 'v=poweron',
+                'Content-Length': postData.length
+            }
         };
-        request.post(onRequest, function (res) {});
+
+        var req = http.request(onRequest, function(res) {});
+
+        req.write(postData);
+        req.end();
+
     });
 
     socket.on('action', function(action) {
